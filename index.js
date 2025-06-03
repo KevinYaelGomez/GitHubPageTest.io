@@ -1,172 +1,165 @@
-let clientsData = {
-            inmobiliario: [
-                { nombre: 'María González', email: 'maria@email.com', telefono: '123456789', tipo_propiedad: 'Casa', presupuesto: 2500000, ubicacion: 'Centro', estado: 'activo' },
-                { nombre: 'Carlos Rodríguez', email: 'carlos@email.com', telefono: '987654321', tipo_propiedad: 'Departamento', presupuesto: 1800000, ubicacion: 'Norte', estado: 'pendiente' }
-            ],
-            legal: [
-                { nombre: 'Empresa ABC S.A.', email: 'contacto@abc.com', telefono: '555000111', tipo_caso: 'Mercantil', descripcion: 'Constitución de sociedad', honorarios: 50000, estado: 'activo' },
-                { nombre: 'Juan Pérez', email: 'juan@email.com', telefono: '555000222', tipo_caso: 'Civil', descripcion: 'Divorcio', honorarios: 25000, estado: 'pendiente' }
-            ],
-            belleza: [
-                { nombre: 'Ana López', email: 'ana@email.com', telefono: '555111333', servicio: 'Color/Tinte', fecha: '2025-06-05', presupuesto: 1500, estado: 'activo' },
-                { nombre: 'Sofia Martín', email: 'sofia@email.com', telefono: '555111444', servicio: 'Maquillaje', fecha: '2025-06-10', presupuesto: 800, estado: 'pendiente' }
-            ]
-        };
+let leads = [];
 
-        // Funcionalidad de tabs
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const targetTab = this.dataset.tab;
+        // Temporizador de cuenta regresiva
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const endTime = now + (15 * 60 * 60 * 1000) + (24 * 60 * 1000) + (38 * 1000); // 15:24:38
+            
+            setInterval(() => {
+                const currentTime = new Date().getTime();
+                const timeLeft = endTime - currentTime;
                 
-                // Remover clase active de todos los botones y contenidos
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
                 
-                // Agregar clase active al botón clickeado y su contenido
-                this.classList.add('active');
-                document.getElementById(targetTab).classList.add('active');
-                
-                updateStats();
-            });
-        });
-
-        // Manejo de formularios
-        document.getElementById('inmobiliario-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const clientData = Object.fromEntries(formData);
-            clientData.estado = 'activo';
-            clientData.presupuesto = parseInt(clientData.presupuesto) || 0;
-            
-            clientsData.inmobiliario.push(clientData);
-            renderTable('inmobiliario');
-            updateStats();
-            this.reset();
-            
-            // Animación de éxito
-            showSuccessMessage('Cliente inmobiliario agregado correctamente');
-        });
-
-        document.getElementById('legal-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const clientData = Object.fromEntries(formData);
-            clientData.estado = 'activo';
-            clientData.honorarios = parseInt(clientData.honorarios) || 0;
-            
-            clientsData.legal.push(clientData);
-            renderTable('legal');
-            updateStats();
-            this.reset();
-            
-            showSuccessMessage('Cliente legal agregado correctamente');
-        });
-
-        document.getElementById('belleza-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const clientData = Object.fromEntries(formData);
-            clientData.estado = 'activo';
-            clientData.presupuesto = parseInt(clientData.presupuesto) || 0;
-            
-            clientsData.belleza.push(clientData);
-            renderTable('belleza');
-            updateStats();
-            this.reset();
-            
-            showSuccessMessage('Cliente de belleza agregado correctamente');
-        });
-
-        // Renderizar tablas
-        function renderTable(sector) {
-            const tbody = document.getElementById(`${sector}-clients`);
-            tbody.innerHTML = '';
-            
-            clientsData[sector].forEach(client => {
-                const row = document.createElement('tr');
-                
-                if (sector === 'inmobiliario') {
-                    row.innerHTML = `
-                        <td>${client.nombre}</td>
-                        <td>${client.tipo_propiedad}</td>
-                        <td>$${client.presupuesto.toLocaleString()}</td>
-                        <td><span class="status ${client.estado}">${client.estado === 'activo' ? 'Activo' : client.estado === 'pendiente' ? 'Pendiente' : 'Cerrado'}</span></td>
-                    `;
-                } else if (sector === 'legal') {
-                    row.innerHTML = `
-                        <td>${client.nombre}</td>
-                        <td>${client.tipo_caso}</td>
-                        <td>$${client.honorarios.toLocaleString()}</td>
-                        <td><span class="status ${client.estado}">${client.estado === 'activo' ? 'Activo' : client.estado === 'pendiente' ? 'Pendiente' : 'Cerrado'}</span></td>
-                    `;
-                } else if (sector === 'belleza') {
-                    row.innerHTML = `
-                        <td>${client.nombre}</td>
-                        <td>${client.servicio}</td>
-                        <td>${client.fecha}</td>
-                        <td><span class="status ${client.estado}">${client.estado === 'activo' ? 'Confirmado' : client.estado === 'pendiente' ? 'Pendiente' : 'Completado'}</span></td>
-                    `;
-                }
-                
-                tbody.appendChild(row);
-            });
+                document.getElementById('countdown').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
         }
 
-        // Actualizar estadísticas
-        function updateStats() {
-            const totalClients = clientsData.inmobiliario.length + clientsData.legal.length + clientsData.belleza.length;
-            const activeDeals = clientsData.inmobiliario.filter(c => c.estado === 'activo').length + 
-                              clientsData.legal.filter(c => c.estado === 'activo').length + 
-                              clientsData.belleza.filter(c => c.estado === 'activo').length;
+        function showInterestForm(service) {
+            const modal = document.getElementById('interestModal');
+            const title = document.getElementById('modalTitle');
+            const specificFields = document.getElementById('specificFields');
             
-            const monthlyRevenue = clientsData.inmobiliario.reduce((sum, c) => sum + (c.estado === 'activo' ? c.presupuesto * 0.03 : 0), 0) +
-                                  clientsData.legal.reduce((sum, c) => sum + (c.estado === 'activo' ? c.honorarios : 0), 0) +
-                                  clientsData.belleza.reduce((sum, c) => sum + (c.estado === 'activo' ? c.presupuesto : 0), 0);
+            // Configurar título y campos específicos según el servicio
+            if (service === 'inmobiliario') {
+                title.textContent = '🏠 Asesoría Inmobiliaria VIP';
+                specificFields.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Tipo de Propiedad de Interés</label>
+                        <select name="tipo_propiedad" style="width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px;">
+                            <option value="casa">Casa</option>
+                            <option value="departamento">Departamento</option>
+                            <option value="terreno">Terreno</option>
+                            <option value="oficina">Oficina</option>
+                            <option value="local">Local Comercial</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Presupuesto Aproximado</label>
+                        <input type="text" name="presupuesto" placeholder="Ej: $2,000,000" style="width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px;">
+                    </div>
+                `;
+            } else if (service === 'legal') {
+                title.textContent = '⚖️ Consultoría Legal Express';
+                specificFields.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Área Legal de Interés</label>
+                        <select name="area_legal" style="width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px;">
+                            <option value="civil">Derecho Civil</option>
+                            <option value="mercantil">Derecho Mercantil</option>
+                            <option value="laboral">Derecho Laboral</option>
+                            <option value="penal">Derecho Penal</option>
+                            <option value="fiscal">Derecho Fiscal</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Urgencia del Caso</label>
+                        <select name="urgencia" style="width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px;">
+                            <option value="baja">Baja - Tengo tiempo</option>
+                            <option value="media">Media - En unas semanas</option>
+                            <option value="alta">Alta - Lo necesito YA</option>
+                        </select>
+                    </div>
+                `;
+            } else if (service === 'belleza') {
+                title.textContent = '✨ Makeover Completo';
+                specificFields.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Fecha Preferida</label>
+                        <input type="date" name="fecha_preferida" style="width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px;">
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555;">Ocasión Especial</label>
+                        <input type="text" name="ocasion" placeholder="Ej: Boda, evento, sesión de fotos..." style="width: 100%; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 12px; font-size: 16px;">
+                    </div>
+                `;
+            }
             
-            document.getElementById('total-clients').textContent = totalClients;
-            document.getElementById('active-deals').textContent = activeDeals;
-            document.getElementById('monthly-revenue').textContent = `$${monthlyRevenue.toLocaleString()}`;
+            modal.style.display = 'flex';
+            modal.dataset.service = service;
         }
 
-        // Mensaje de éxito
-        function showSuccessMessage(message) {
+        function closeModal() {
+            document.getElementById('interestModal').style.display = 'none';
+            document.getElementById('interestForm').reset();
+        }
+
+        function showContactInfo() {
+            alert(`📞 Contáctanos:\n\n` +
+                  `WhatsApp: +52 33 1234-5678\n` +
+                  `Email: info@sidebroker.com\n` +
+                  `Horario: Lun-Vie 9:00-18:00\n\n` +
+                  `¡Te contactaremos en menos de 1 hora!`);
+        }
+
+        // Manejo del formulario
+        document.getElementById('interestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const leadData = Object.fromEntries(formData);
+            leadData.servicio = document.getElementById('interestModal').dataset.service;
+            leadData.fecha_registro = new Date().toISOString();
+            
+            leads.push(leadData);
+            
+            // Simular envío exitoso
+            closeModal();
+            
+            // Mostrar mensaje de éxito
             const successDiv = document.createElement('div');
             successDiv.style.cssText = `
                 position: fixed;
-                top: 20px;
-                right: 20px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
                 background: linear-gradient(45deg, #28a745, #20c997);
                 color: white;
-                padding: 15px 25px;
-                border-radius: 12px;
+                padding: 30px 40px;
+                border-radius: 20px;
                 font-weight: 600;
-                z-index: 1000;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-                animation: slideIn 0.3s ease;
+                z-index: 2000;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+                text-align: center;
+                max-width: 400px;
+                animation: successPop 0.5s ease;
             `;
-            successDiv.textContent = message;
             
+            successDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
+                <div style="font-size: 18px; margin-bottom: 10px;">¡Solicitud Enviada!</div>
+                <div style="font-size: 14px; opacity: 0.9;">Te contactaremos en menos de 1 hora para confirmar tu promoción especial.</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            // Agregar estilo de animación
             const style = document.createElement('style');
             style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
+                @keyframes successPop {
+                    0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+                    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
                 }
             `;
             document.head.appendChild(style);
             
-            document.body.appendChild(successDiv);
-            
             setTimeout(() => {
                 successDiv.remove();
                 style.remove();
-            }, 3000);
-        }
-
-        // Inicializar la aplicación
-        document.addEventListener('DOMContentLoaded', function() {
-            renderTable('inmobiliario');
-            renderTable('legal');
-            renderTable('belleza');
-            updateStats();
+            }, 4000);
+            
+            console.log('Nuevo lead registrado:', leadData);
         });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('interestModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Inicializar countdown
+        updateCountdown();
