@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side Broker CRM - Inmobiliario | Legal | Belleza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 20px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #764ba2, #667eea);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .panel-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .clients-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .clients-table th {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .clients-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .clients-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.activo { background: #d4edda; color: #155724; }
+        .status.pendiente { background: #fff3cd; color: #856404; }
+        .status.cerrado { background: #f8d7da; color: #721c24; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .sector-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .nav-tabs {
+                justify-content: center;
+            }
+            
+            .clients-table {
+                font-size: 14px;
+            }
+            
+            .clients-table th,
+            .clients-table td {
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">Side Broker CRM</div>
+            <nav class="nav-tabs">
+                <button class="tab-btn active" data-tab="inmobiliario">🏠 Inmobiliario</button>
+                <button class="tab-btn" data-tab="legal">⚖️ Legal</button>
+                <button class="tab-btn" data-tab="belleza">💄 Belleza</button>
+            </nav>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-clients">0</div>
+                <div class="stat-label">Total Clientes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="active-deals">0</div>
+                <div class="stat-label">Negocios Activos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="monthly-revenue">$0</div>
+                <div class="stat-label">Ingresos del Mes</div>
+            </div>
+        </div>
+
+        <!-- SECTOR INMOBILIARIO -->
+        <div id="inmobiliario" class="tab-content active">
+            <div class="main-content">
+                <div class="panel">
+                    <div class="sector-icon">🏠</div>
+                    <h2 class="panel-title">Nuevo Cliente Inmobiliario</h2>
+                    <form id="inmobiliario-form">
+                        <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" class="form-control" name="telefono" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Propiedad</label>
+                            <select class="form-control" name="tipo_propiedad">
+                                <option value="casa">Casa</option>
+                                <option value="departamento">Departamento</option>
+                                <option value="terreno">Terreno</option>
+                                <option value="oficina">Oficina</option>
+                                <option value="local">Local Comercial</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Presupuesto</label>
+                            <input type="number" class="form-control" name="presupuesto" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Ubicación Preferida</label>
+                            <input type="text" class="form-control" name="ubicacion">
+                        </div>
+                        <button type="submit" class="btn">Agregar Cliente</button>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <h2 class="panel-title">Clientes Inmobiliarios</h2>
+                    <table class="clients-table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Propiedad</th>
+                                <th>Presupuesto</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inmobiliario-clients">
+                            <tr>
+                                <td>María González</td>
+                                <td>Casa</td>
+                                <td>$2,500,000</td>
+                                <td><span class="status activo">Activo</span></td>
+                            </tr>
+                            <tr>
+                                <td>Carlos Rodríguez</td>
+                                <td>Departamento</td>
+                                <td>$1,800,000</td>
+                                <td><span class="status pendiente">Pendiente</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTOR LEGAL -->
+        <div id="legal" class="tab-content">
+            <div class="main-content">
+                <div class="panel">
+                    <div class="sector-icon">⚖️</div>
+                    <h2 class="panel-title">Nuevo Cliente Legal</h2>
+                    <form id="legal-form">
+                        <div class="form-group">
+                            <label>Nombre/Empresa</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" class="form-control" name="telefono" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Caso</label>
+                            <select class="form-control" name="tipo_caso">
+                                <option value="civil">Derecho Civil</option>
+                                <option value="mercantil">Derecho Mercantil</option>
+                                <option value="laboral">Derecho Laboral</option>
+                                <option value="penal">Derecho Penal</option>
+                                <option value="fiscal">Derecho Fiscal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción del Caso</label>
+                            <textarea class="form-control" name="descripcion" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Honorarios Estimados</label>
+                            <input type="number" class="form-control" name="honorarios" placeholder="0">
+                        </div>
+                        <button type="submit" class="btn">Agregar Cliente</button>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <h2 class="panel-title">Clientes Legales</h2>
+                    <table class="clients-table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Tipo de Caso</th>
+                                <th>Honorarios</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="legal-clients">
+                            <tr>
+                                <td>Empresa ABC S.A.</td>
+                                <td>Mercantil</td>
+                                <td>$50,000</td>
+                                <td><span class="status activo">Activo</span></td>
+                            </tr>
+                            <tr>
+                                <td>Juan Pérez</td>
+                                <td>Civil</td>
+                                <td>$25,000</td>
+                                <td><span class="status pendiente">Pendiente</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTOR BELLEZA -->
+        <div id="belleza" class="tab-content">
+            <div class="main-content">
+                <div class="panel">
+                    <div class="sector-icon">💄</div>
+                    <h2 class="panel-title">Nuevo Cliente Belleza</h2>
+                    <form id="belleza-form">
+                        <div class="form-group">
+                            <label>Nombre Completo</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" class="form-control" name="telefono" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Servicio de Interés</label>
+                            <select class="form-control" name="servicio">
+                                <option value="corte">Corte de Cabello</option>
+                                <option value="color">Color/Tinte</option>
+                                <option value="maquillaje">Maquillaje</option>
+                                <option value="facial">Tratamiento Facial</option>
+                                <option value="manicure">Manicure/Pedicure</option>
+                                <option value="depilacion">Depilación</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha Preferida</label>
+                            <input type="date" class="form-control" name="fecha">
+                        </div>
+                        <div class="form-group">
+                            <label>Presupuesto</label>
+                            <input type="number" class="form-control" name="presupuesto" placeholder="0">
+                        </div>
+                        <button type="submit" class="btn">Agregar Cliente</button>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <h2 class="panel-title">Clientes Belleza</h2>
+                    <table class="clients-table">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Fecha</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="belleza-clients">
+                            <tr>
+                                <td>Ana López</td>
+                                <td>Color/Tinte</td>
+                                <td>2025-06-05</td>
+                                <td><span class="status activo">Confirmado</span></td>
+                            </tr>
+                            <tr>
+                                <td>Sofia Martín</td>
+                                <td>Maquillaje</td>
+                                <td>2025-06-10</td>
+                                <td><span class="status pendiente">Pendiente</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
